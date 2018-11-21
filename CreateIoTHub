@@ -1,0 +1,19 @@
+# Az Azure webfelületen bejelentkezés után, Cloud CLI PowerShell ablakban futtatva
+# lekérdezzük az Azure lokációkódokat, hogy megtaláljuk a legközelebbi szervert, ahol létrehozhatjuk a Hubot
+azure location list –json
+# a legközelebbi ilyen szerver a westeurope, ezt fogjuk használni
+# változók deklarálása
+$location = "westeurope"
+$resourceGroup = "RemoteMonitoringResources"
+$iotHubConsumerGroup = "RemonteMonitoringConsumers"
+$iotHubName = "RemoteMonitoringHubVD"
+$containerName = "monitorresults"
+$iotDeviceName = "Monitor-Test-Device"
+#erőforráscsoport létrehozása
+New-AzureRmResourceGroup -Name $resourceGroup -Location $location
+#IoT Hub létrehozása, a névnek globálisan unique-nek kell lennie
+New-AzureRmIotHub `
+    -ResourceGroupName $resourceGroup `
+    -Name $iotHubName `
+    -SkuName S1 -Units 3 `
+    -Location $location
